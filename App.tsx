@@ -8,7 +8,7 @@ import { ThemeToggle } from './components/ThemeToggle';
 import { Loader } from './components/Loader';
 import { generateContent } from './services/geminiService';
 import { parseExifData } from './services/exifService';
-import type { ExifData, LiteraryExcerpt, Theme } from './types';
+import type { ExifData, LiteraryExcerpt, Theme, LocationInfo } from './types';
 import { LogoIcon, MessageCircleIcon } from './components/icons';
 import { Login } from './components/Login';
 import { Chat } from './components/Chat';
@@ -22,6 +22,7 @@ const App: React.FC = () => {
   const [captions, setCaptions] = useState<string[]>([]);
   const [excerpts, setExcerpts] = useState<LiteraryExcerpt[]>([]);
   const [exifData, setExifData] = useState<ExifData | null>(null);
+  const [locationInfo, setLocationInfo] = useState<LocationInfo | null>(null);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -64,6 +65,7 @@ const App: React.FC = () => {
     setCaptions([]);
     setExcerpts([]);
     setExifData(null);
+    setLocationInfo(null);
     setError(null);
     if (!keepImage) {
       setImageFile(null);
@@ -83,15 +85,14 @@ const App: React.FC = () => {
     setImagePreview(URL.createObjectURL(file));
 
     try {
-      const [exifResult, contentResult] = await Promise.all([
-        parseExifData(file),
-        generateContent(ai, file)
-      ]);
+      const exifResult = await parseExifData(file);
+      const contentResult = await generateContent(ai, file, exifResult);
       
       if(contentResult) {
         setTitles(contentResult.titles);
         setCaptions(contentResult.captions);
         setExcerpts(contentResult.excerpts);
+        setLocationInfo(contentResult.location);
       }
       setExifData(exifResult);
 
@@ -146,12 +147,13 @@ const App: React.FC = () => {
             {isLoading ? (
               <Loader />
             ) : (
-              (titles.length > 0 || captions.length > 0 || excerpts.length > 0 || exifData) ? (
+              (titles.length > 0 || captions.length > 0 || excerpts.length > 0 || exifData || locationInfo) ? (
                 <ResultsDisplay
                   titles={titles}
                   captions={captions}
                   excerpts={excerpts}
                   exifData={exifData}
+                  locationInfo={locationInfo}
                   hasImage={!!imagePreview}
                 />
               ) : (

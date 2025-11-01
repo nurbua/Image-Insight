@@ -1,6 +1,6 @@
 
 import { GoogleGenAI, Type, Chat, GenerateContentResponse } from "@google/genai";
-import type { LiteraryExcerpt } from "../types";
+import type { LiteraryExcerpt, ExifData, LocationInfo } from "../types";
 
 const fileToGenerativePart = async (file: File) => {
   const base64EncodedDataPromise = new Promise<string>((resolve) => {
@@ -13,13 +13,21 @@ const fileToGenerativePart = async (file: File) => {
   };
 };
 
-export const generateContent = async (ai: GoogleGenAI, file: File) => {
+export const generateContent = async (ai: GoogleGenAI, file: File, exifData: ExifData | null) => {
     const imagePart = await fileToGenerativePart(file);
 
-    const prompt = `Analyse cette image et fournis les informations suivantes en français. Réponds uniquement avec un seul objet JSON.
+    let prompt = `Analyse cette image et fournis les informations suivantes en français. Réponds uniquement avec un seul objet JSON.
 1. 'titles': Un tableau de 2-3 chaînes de caractères pour des titres créatifs.
 2. 'captions': Un tableau de 2-3 chaînes de caractères pour des légendes courtes pour les réseaux sociaux.
 3. 'excerpts': Un tableau de 2 objets pour des extraits littéraires. Chaque objet doit contenir 'extrait', 'auteur', 'oeuvre', et 'traduction'. Si l'extrait original est en français, le champ 'traduction' doit être une chaîne vide.`;
+
+    if (exifData?.gps) {
+        prompt += `
+4. 'location': L'image a été prise aux coordonnées GPS suivantes : Latitude ${exifData.gps.latitude}, Longitude ${exifData.gps.longitude}. Identifie et renvoie le nom de la commune (city), la région ou province (region), et le pays (country) dans un objet 'location'. Si tu ne peux pas déterminer l'emplacement, renvoie null pour la valeur de 'location'.`;
+    } else {
+        prompt += `
+4. 'location': Il n'y a pas de données GPS. Renvoie null pour la valeur de 'location'.`;
+    }
 
     const schema = {
         type: Type.OBJECT,
@@ -44,9 +52,18 @@ export const generateContent = async (ai: GoogleGenAI, file: File) => {
                     },
                     required: ['extrait', 'auteur', 'oeuvre', 'traduction']
                 }
+            },
+            location: {
+                type: Type.OBJECT,
+                nullable: true,
+                properties: {
+                    city: { type: Type.STRING },
+                    region: { type: Type.STRING },
+                    country: { type: Type.STRING },
+                }
             }
         },
-        required: ['titles', 'captions', 'excerpts']
+        required: ['titles', 'captions', 'excerpts', 'location']
     };
 
     const response = await ai.models.generateContent({
@@ -64,6 +81,7 @@ export const generateContent = async (ai: GoogleGenAI, file: File) => {
             titles: string[];
             captions: string[];
             excerpts: LiteraryExcerpt[];
+            location: LocationInfo | null;
         };
     } catch (e) {
         console.error("Failed to parse JSON from Gemini:", e);

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { ExifData, LiteraryExcerpt } from '../types';
+import type { ExifData, LiteraryExcerpt, LocationInfo } from '../types';
 import { ResultCard } from './ResultCard';
 import { CopyButton } from './CopyButton';
 import { CameraIcon, MapPinIcon, BookOpenIcon, HashIcon, ApertureIcon } from './icons';
@@ -9,10 +9,11 @@ interface ResultsDisplayProps {
   captions: string[];
   excerpts: LiteraryExcerpt[];
   exifData: ExifData | null;
+  locationInfo: LocationInfo | null;
   hasImage: boolean;
 }
 
-export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ titles, captions, excerpts, exifData, hasImage }) => {
+export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ titles, captions, excerpts, exifData, locationInfo, hasImage }) => {
     if (!hasImage) {
         return (
             <div className="flex flex-col items-center justify-center text-center p-8 h-full bg-white dark:bg-bunker-900 rounded-lg shadow-lg border border-gray-200 dark:border-bunker-800">
@@ -80,6 +81,31 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ titles, captions
                 </div>
               </div>
             ))}
+          </div>
+        </ResultCard>
+      )}
+      
+      {locationInfo && Object.values(locationInfo).some(v => v) && (
+        <ResultCard title="Lieu de la Prise de Vue" icon={<MapPinIcon className="w-5 h-5" />} className={getCardClassName()}>
+          <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
+            {locationInfo.city && (
+                <>
+                    <span className="font-semibold text-gray-500 dark:text-gray-400">Commune:</span>
+                    <span className="text-gray-800 dark:text-gray-200">{locationInfo.city}</span>
+                </>
+            )}
+            {locationInfo.region && (
+                <>
+                    <span className="font-semibold text-gray-500 dark:text-gray-400">Région:</span>
+                    <span className="text-gray-800 dark:text-gray-200">{locationInfo.region}</span>
+                </>
+            )}
+            {locationInfo.country && (
+                <>
+                    <span className="font-semibold text-gray-500 dark:text-gray-400">Pays:</span>
+                    <span className="text-gray-800 dark:text-gray-200">{locationInfo.country}</span>
+                </>
+            )}
           </div>
         </ResultCard>
       )}

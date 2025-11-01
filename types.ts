@@ -20,11 +20,17 @@ export interface ExifData {
   };
 }
 
-// FIX: Add missing type definitions for Firebase services.
+export interface LocationInfo {
+  city?: string;
+  region?: string;
+  country?: string;
+}
+
 export interface AnalysisData {
   titles: string[];
   captions: string[];
   excerpts: LiteraryExcerpt[];
+  location?: LocationInfo | null;
 }
 
 export interface AnalysisResult extends AnalysisData {
