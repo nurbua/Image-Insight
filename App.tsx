@@ -9,7 +9,7 @@ import { Loader } from './components/Loader';
 import { generateContent } from './services/geminiService';
 import { parseExifData } from './services/exifService';
 import type { ExifData, LiteraryExcerpt, Theme, LocationInfo } from './types';
-import { LogoIcon, MessageCircleIcon } from './components/icons';
+import { LogoIcon, MessageCircleIcon, EnterFullScreenIcon, ExitFullScreenIcon } from './components/icons';
 import { Login } from './components/Login';
 import { Chat } from './components/Chat';
 
@@ -31,6 +31,7 @@ const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(!!document.fullscreenElement);
   
   useEffect(() => {
     if (process.env.API_KEY) {
@@ -59,6 +60,24 @@ const App: React.FC = () => {
       document.documentElement.classList.remove('dark');
     }
   }, [theme]);
+
+  useEffect(() => {
+    const onFullScreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', onFullScreenChange);
+    return () => document.removeEventListener('fullscreenchange', onFullScreenChange);
+  }, []);
+
+  const toggleFullScreen = () => {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch((err) => {
+            alert(`Erreur lors du passage en plein écran: ${err.message}`);
+        });
+    } else {
+        document.exitFullscreen();
+    }
+  };
 
   const resetState = (keepImage: boolean = false) => {
     setTitles([]);
@@ -122,7 +141,16 @@ const App: React.FC = () => {
               Image Insight
             </h1>
           </div>
-          <ThemeToggle theme={theme} setTheme={setTheme} />
+          <div className="flex items-center gap-2">
+            <button
+              onClick={toggleFullScreen}
+              className="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-bunker-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-bunker-950"
+              aria-label="Basculer en plein écran"
+            >
+              {isFullscreen ? <ExitFullScreenIcon className="h-6 w-6" /> : <EnterFullScreenIcon className="h-6 w-6" />}
+            </button>
+            <ThemeToggle theme={theme} setTheme={setTheme} />
+          </div>
         </div>
       </header>
       

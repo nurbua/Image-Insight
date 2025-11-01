@@ -28,21 +28,15 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ titles, captions
         )
     }
 
-  let cardIndex = 0;
-  const getCardClassName = () => {
-    const className = cardIndex++ % 2 === 0 
-      ? 'bg-white dark:bg-bunker-900' 
-      : 'bg-gray-50 dark:bg-bunker-800';
-    return className;
-  }
+  const cardClassName = "bg-white dark:bg-bunker-900";
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className="space-y-6">
       {titles.length > 0 && (
-        <ResultCard title="Titres Suggérés" icon={<HashIcon className="w-5 h-5" />} className={getCardClassName()}>
+        <ResultCard title="Titres Suggérés" icon={<HashIcon className="w-5 h-5" />} className={cardClassName}>
           <ul className="space-y-2">
             {titles.map((title, index) => (
-              <li key={index} className="flex justify-between items-center gap-2 p-2 bg-gray-100 dark:bg-bunker-950 rounded-md">
+              <li key={index} className="flex justify-between items-center gap-2 p-2 bg-gray-100 dark:bg-bunker-800 rounded-md">
                 <span className="text-gray-700 dark:text-gray-300">{title}</span>
                 <CopyButton textToCopy={title} />
               </li>
@@ -52,10 +46,10 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ titles, captions
       )}
 
       {captions.length > 0 && (
-        <ResultCard title="Légendes Suggérées" icon={<HashIcon className="w-5 h-5" />} className={getCardClassName()}>
+        <ResultCard title="Légendes Suggérées" icon={<HashIcon className="w-5 h-5" />} className={cardClassName}>
           <ul className="space-y-2">
             {captions.map((caption, index) => (
-              <li key={index} className="flex justify-between items-center gap-2 p-2 bg-gray-100 dark:bg-bunker-950 rounded-md">
+              <li key={index} className="flex justify-between items-center gap-2 p-2 bg-gray-100 dark:bg-bunker-800 rounded-md">
                 <span className="text-gray-700 dark:text-gray-300">{caption}</span>
                 <CopyButton textToCopy={caption} />
               </li>
@@ -65,10 +59,10 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ titles, captions
       )}
 
       {excerpts.length > 0 && (
-        <ResultCard title="Extraits Littéraires" icon={<BookOpenIcon className="w-5 h-5" />} className={getCardClassName()}>
+        <ResultCard title="Extraits Littéraires" icon={<BookOpenIcon className="w-5 h-5" />} className={cardClassName}>
           <div className="space-y-4">
             {excerpts.map((excerpt, index) => (
-              <div key={index} className="p-4 bg-gray-100 dark:bg-bunker-950 rounded-lg border border-gray-200 dark:border-bunker-800">
+              <div key={index} className="p-4 bg-gray-100 dark:bg-bunker-800 rounded-lg border border-gray-200 dark:border-bunker-700">
                 <blockquote className="italic text-gray-700 dark:text-gray-300">
                   "{excerpt.extrait}"
                   {excerpt.traduction && <span className="block mt-2 text-sm text-gray-500 dark:text-gray-400">(Traduction: "{excerpt.traduction}")</span>}
@@ -86,7 +80,7 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ titles, captions
       )}
       
       {locationInfo && Object.values(locationInfo).some(v => v) && (
-        <ResultCard title="Lieu de la Prise de Vue" icon={<MapPinIcon className="w-5 h-5" />} className={getCardClassName()}>
+        <ResultCard title="Lieu de la Prise de Vue" icon={<MapPinIcon className="w-5 h-5" />} className={cardClassName}>
           <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
             {locationInfo.city && (
                 <>
@@ -111,7 +105,7 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ titles, captions
       )}
 
       {exifData && (
-        <ResultCard title="Données EXIF" icon={<CameraIcon className="w-5 h-5" />} className={getCardClassName()}>
+        <ResultCard title="Données EXIF" icon={<CameraIcon className="w-5 h-5" />} className={cardClassName}>
           <div className="space-y-3 text-sm">
             {exifData.make && exifData.model && (
               <div className="flex items-center gap-3">
