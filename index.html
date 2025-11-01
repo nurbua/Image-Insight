@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Insight</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              'bunker': {
+                '50': '#f5f7f8',
+                '100': '#e6eaed',
+                '200': '#cad6dd',
+                '300': '#a2bac6',
+                '400': '#7599ab',
+                '500': '#587e92',
+                '600': '#4a6a7c',
+                '700': '#3f5969',
+                '800': '#384c59',
+                '900': '#32424d',
+                '950': '#1e282f',
+              },
+              'ivory-light': '#FFFEF8',
+            }
+          }
+        }
+      }
+    </script>
+  <script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.28.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "firebase/": "https://aistudiocdn.com/firebase@^12.5.0/"
+  }
+}
+</script>
+</head>
+  <body class="bg-ivory-light dark:bg-bunker-950">
+    <div id="root"></div>
+  </body>
+</html>

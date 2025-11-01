@@ -1,0 +1,5 @@
+{
+  "name": "Copy of Image Insight",
+  "description": "An application that allows users to upload an image and get AI-generated titles, captions, literary excerpts, and EXIF data.",
+  "requestFramePermissions": []
+}
