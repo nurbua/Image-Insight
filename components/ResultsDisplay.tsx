@@ -37,7 +37,7 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ titles, captions
   }
 
   return (
-    <div className="space-y-6">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {titles.length > 0 && (
         <ResultCard title="Titres Suggérés" icon={<HashIcon className="w-5 h-5" />} className={getCardClassName()}>
           <ul className="space-y-2">
